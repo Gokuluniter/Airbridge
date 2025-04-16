@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AirBridge - Join</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #a18cd1, #fbc2eb);
+      background-size: 400% 400%;
+      animation: gradientBG 10s ease infinite;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .container {
+      width: 85%;
+      max-width: 550px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(15px);
+      border-radius: 15px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s ease-in-out;
+      position: relative;
+    }
+
+    .container::before, .container::after {
+      content: "";
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      filter: blur(10px);
+      animation: floatParticles 5s infinite alternate ease-in-out;
+    }
+
+    .container::before {
+      top: -10px;
+      left: 10px;
+    }
+
+    .container::after {
+      bottom: -10px;
+      right: 10px;
+    }
+
+    @keyframes floatParticles {
+      0% { transform: translateY(0px); opacity: 0.8; }
+      100% { transform: translateY(15px); opacity: 0.5; }
+    }
+
+    .logo {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 48px;
+      color: #000000;
+      text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 15px;
+      text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+      color: #000000;
+      text-align: center;
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.3);
+      color: #000000;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+
+    input:focus {
+      background: rgba(255, 255, 255, 0.5);
+      transform: scale(1.02);
+      outline: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      background: #ff6b81;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-bottom: 10px;
+    }
+
+    button:hover {
+      background: #ff4757;
+      transform: scale(1.05);
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      margin: 20px 0;
+      color: #666;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .divider span {
+      padding: 0 10px;
+      font-size: 14px;
+      color: #666;
+    }
+
+    .error {
+      color: #ff4757;
+      margin-top: 5px;
+      font-size: 14px;
+      display: none;
+    }
+
+    #loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.9);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #ff6b81;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .button-spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid #fff;
+      border-top: 2px solid transparent;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: none;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 1.5rem;
+        margin: 0.5rem;
+      }
+      .logo {
+        font-size: 36px;
+      }
+      h1 {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+      button {
+        padding: 10px 16px;
+        min-width: 180px;
+        font-size: 0.9rem;
+      }
+      input {
+        padding: 10px;
+        font-size: 16px;
+      }
+      .divider {
+        margin: 1rem 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="loading-overlay">
+      <div class="spinner"></div>
+    </div>
+    <div class="login-box">
+      <div class="logo">🌉</div>
+      <h1>AirBridge</h1>
+      <div class="input-group">
+        <input type="text" id="username" placeholder="Enter your username (optional)" maxlength="20">
+      </div>
+      <button onclick="createRoom()">Create New Room</button>
+      <div class="divider">
+        <span>or</span>
+      </div>
+      <div class="input-group">
+        <input type="text" id="room-id" placeholder="Enter Room ID">
+        <button onclick="joinRoom()">Join Room</button>
+      </div>
+    </div>
+    <div id="error-message" class="error"></div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    // Initialize socket with configuration
+    const socket = io({
+      transports: ['websocket', 'polling'],
+      upgrade: true,
+      reconnection: true,
+      reconnectionAttempts: Infinity,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
+      timeout: 20000,
+      autoConnect: true,
+      path: '/socket.io/',
+      withCredentials: false,
+      forceNew: true,
+      multiplex: false,
+      rememberUpgrade: true,
+      secure: window.location.protocol === 'https:'
+    });
+
+    let isConnected = false;
+    let reconnectAttempts = 0;
+    const MAX_RECONNECT_ATTEMPTS = 5;
+    const errorDiv = document.getElementById('error-message');
+    const loadingOverlay = document.getElementById('loading-overlay');
+
+    function setLoading(isLoading) {
+      loadingOverlay.style.display = isLoading ? 'flex' : 'none';
+    }
+
+    function showError(message, duration = 3000) {
+      console.log('Status:', message);
+      errorDiv.textContent = message;
+      errorDiv.style.display = 'block';
+      if (duration > 0) {
+        setTimeout(() => {
+          errorDiv.style.display = 'none';
+        }, duration);
+      }
+    }
+
+    function updateConnectionState(connected, message) {
+      isConnected = connected;
+      if (message) {
+        showError(message, connected ? 2000 : 0);
+      }
+    }
+
+    // Socket connection handling
+    socket.on('connect', () => {
+      console.log('Connected to server with ID:', socket.id);
+      reconnectAttempts = 0;
+      updateConnectionState(true, 'Connected to server!');
+    });
+
+    socket.on('connect_error', (error) => {
+      console.error('Connection error:', error);
+      reconnectAttempts++;
+      if (reconnectAttempts >= MAX_RECONNECT_ATTEMPTS) {
+        updateConnectionState(false, 'Connection failed. Please refresh the page.');
+        socket.disconnect();
+      } else {
+        updateConnectionState(false, `Connection error. Retrying... (${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})`);
+      }
+    });
+
+    socket.on('disconnect', (reason) => {
+      console.log('Disconnected:', reason);
+      if (reason === 'io server disconnect') {
+        updateConnectionState(false, 'Server disconnected. Please refresh the page.');
+        socket.disconnect();
+      } else if (reason === 'transport close' || reason === 'transport error') {
+        updateConnectionState(false, 'Connection lost. Trying to reconnect...');
+      } else {
+        updateConnectionState(false, 'Disconnected. Trying to reconnect...');
+      }
+    });
+
+    socket.on('error', (error) => {
+      console.error('Socket error:', error);
+      updateConnectionState(false, 'Connection error occurred');
+    });
+
+    function createRoom() {
+      if (!isConnected) {
+        showError('Not connected to server. Please wait or refresh the page.');
+        return;
+      }
+
+      const username = document.getElementById('username').value.trim();
+      setLoading(true);
+
+      // Create room first
+      socket.emit('create-room', (response) => {
+        console.log('Create room response:', response);
+        if (response.error) {
+          setLoading(false);
+          showError(response.error);
+          return;
+        }
+        
+        if (response.success) {
+          // After successful room creation, set username if provided
+          if (username) {
+            socket.emit('set-username', username, (usernameResponse) => {
+              console.log('Set username response:', usernameResponse);
+              if (usernameResponse.error) {
+                setLoading(false);
+                showError(usernameResponse.error);
+                return;
+              }
+              
+              // Store username in localStorage
+              localStorage.setItem('username', username);
+              
+              // Add a small delay before redirecting to ensure room is ready
+              setTimeout(() => {
+                window.location.href = `/app.html?room=${response.roomId}&username=${encodeURIComponent(username)}`;
+              }, 500);
+            });
+          } else {
+            // If no username, add a small delay before redirecting
+            setTimeout(() => {
+              window.location.href = `/app.html?room=${response.roomId}`;
+            }, 500);
+          }
+        }
+      });
+    }
+
+    function joinRoom() {
+      if (!isConnected) {
+        showError('Not connected to server. Please wait or refresh the page.');
+        return;
+      }
+
+      const username = document.getElementById('username').value.trim();
+      const roomId = document.getElementById('room-id').value.trim();
+      
+      if (!roomId) {
+        showError('Please enter a Room ID');
+        return;
+      }
+
+      setLoading(true);
+
+      // Join room first
+      socket.emit('join-room', roomId, (response) => {
+        console.log('Join room response:', response);
+        if (response.error) {
+          setLoading(false);
+          showError(response.error);
+          return;
+        }
+        
+        if (response.success) {
+          // After successful join, set username if provided
+          if (username) {
+            socket.emit('set-username', username, (usernameResponse) => {
+              console.log('Set username response:', usernameResponse);
+              if (usernameResponse.error) {
+                setLoading(false);
+                showError(usernameResponse.error);
+                return;
+              }
+              
+              // Store username in localStorage
+              localStorage.setItem('username', username);
+              
+              // Redirect to app with room ID and username
+              window.location.href = `/app.html?room=${roomId}&username=${encodeURIComponent(username)}`;
+            });
+          } else {
+            // If no username, just redirect
+            window.location.href = `/app.html?room=${roomId}`;
+          }
+        }
+      });
+    }
+
+    // Handle enter key in room input
+    document.getElementById('room-id').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        joinRoom();
+      }
+    });
+  </script>
+</body>
+</html>
